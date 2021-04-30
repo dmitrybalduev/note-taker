@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node server.js",
+    "watch": "nodemon server6.js"
   },
   "author": "",
   "license": "ISC",
@@ -13,6 +14,9 @@
     "express": "^4.17.1",
     "fs": "*",
     "path": "^0.12.7"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
   },
   "repository": {
     "type": "git",
