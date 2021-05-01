@@ -47,6 +47,23 @@ app.post("/api/notes",  (req, res) => {
     });
 });
 
+app.delete(`/api/notes/:some_id`, (req, res) =>{
+    console.log("ENTERING DELETE METHOD");
+    console.log(req.params);
+    console.log(req.params.some_id);
+    fs.readFile(path.join(__dirname + "/db/db.json"), "utf-8", (err, data) => {
+        if(err) throw err;
+        let notes = JSON.parse(data);
+        let newnotes = notes.filter((item) => item.id != req.params.some_id);
+        console.log(newnotes);
+
+        fs.writeFile((path.join(__dirname + "/db/db.json")), JSON.stringify(newnotes),  (error) => {
+            if (error) throw error; 
+            res.json(newnotes);
+        });
+    });
+
+});
 
 
 
