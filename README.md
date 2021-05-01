@@ -9,4 +9,5 @@ This application allows user view, create and delete notes. Notes are saved in l
 
 ## Link to live application
 
+https://note-taker-dmitry.herokuapp.com/
 
