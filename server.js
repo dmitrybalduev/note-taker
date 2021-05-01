@@ -15,12 +15,12 @@ app.get('/notes', (req, res) => res.sendFile(path.join(__dirname, './public/note
 app.get("/api/notes",  (req, res) => {
     fs.readFile("db/db.json", "utf8", function (err, notes) {
         if (err) throw err;
+        //check if file is empty. if yes, return empty {}
         if(notes){
             res.json(JSON.parse(notes)); 
         } else{
             res.json("{}");
         }
-        
     })
 });
 
@@ -28,11 +28,17 @@ app.post("/api/notes",  (req, res) => {
     const note = req.body;
     let notesArray;
     let id;
+    //reading file db.json
     fs.readFile(path.join(__dirname + "/db/db.json"), "utf8", (err, data) => {
         if (err) throw err;
+        //if file is empty, assign empty array value, otherwise parse json data to array
         notesArray = data.length === 0? []: JSON.parse(data);
-        // id = notesArray[notesArray.length - 1].id + 1;
+        //checking if array is empty, if yes assign id = 1, else getting last element's id 
+        //and increment it by 1 so we always have unique id
+        //will also work after deleting notes from list
         id = notesArray.length === 0 ? 1: notesArray[notesArray.length - 1].id + 1;
+
+        //saving data to new object and push it to array
         let newObj = {
             id: id,
             title: note.title,
@@ -40,6 +46,7 @@ app.post("/api/notes",  (req, res) => {
         }
         notesArray.push(newObj);
 
+        //writing a file with additional note
         fs.writeFile((path.join(__dirname + "/db/db.json")), JSON.stringify(notesArray),  (error) => {
             if (error) throw error; 
             res.json(newObj);
@@ -48,17 +55,16 @@ app.post("/api/notes",  (req, res) => {
 });
 
 app.delete(`/api/notes/:some_id`, (req, res) =>{
-    console.log("ENTERING DELETE METHOD");
-    console.log(req.params);
-    console.log(req.params.some_id);
+    //reading data from db file
     fs.readFile(path.join(__dirname + "/db/db.json"), "utf-8", (err, data) => {
         if(err) throw err;
         let notes = JSON.parse(data);
+        //filtering notes and saving notes that don't have same id as provided in request.
         let newnotes = notes.filter((item) => item.id != req.params.some_id);
-        console.log(newnotes);
-
+        //writing all notes to db file
         fs.writeFile((path.join(__dirname + "/db/db.json")), JSON.stringify(newnotes),  (error) => {
             if (error) throw error; 
+            //sending response with modified notes
             res.json(newnotes);
         });
     });
